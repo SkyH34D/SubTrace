@@ -1,0 +1,1 @@
+# GUI principal en Python para osint-dns-tool
