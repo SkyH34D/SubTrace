@@ -4,8 +4,7 @@
   <p align="center">
     <a align="center" href="" target="https://github.com/aliasrobotics/CAI">
       <img
-        width="500"
-        height="200"
+        width="75%"
         src="https://github.com/SkyH34D/SubTrace/blob/2731a3ac39eda30054129e0f617de92cab78b333/media/SubTrace.png"
       >
     </a>
