@@ -1,6 +1,16 @@
 
 # 🌐 SubTrace
 
+  <p align="center">
+    <a align="center" href="" target="https://github.com/aliasrobotics/CAI">
+      <img
+        width="500"
+        height="200"
+        src="https://github.com/SkyH34D/SubTrace/blob/2731a3ac39eda30054129e0f617de92cab78b333/media/SubTrace.png"
+      >
+    </a>
+  </p>
+
 **SubTrace** es una herramienta gráfica y automatizada para el reconocimiento pasivo de DNS y subdominios. Combina potentes utilidades OSINT como `dnsrecon`, `amass`, `subfinder`, `httpx`, `gowitness` y `nmap` para consolidar inteligencia sobre la superficie expuesta de un dominio.
 
 ---
