@@ -75,5 +75,5 @@ El uso sin permiso de esta herramienta puede ser ilegal.
 ---
 
 ## 👤 Autor
-
-Desarrollado como parte de un toolkit de ciberseguridad ofensiva y automatización OSINT.
+Cristian "SkyH34D" Franco
+Offensive Security | Pentester | Red Team | IA Enthusiast | Agents & MCP Servers | CEH v13
