@@ -2,7 +2,7 @@
 # 🌐 SubTrace
 
   <p align="center">
-    <a align="center" href="" target="https://github.com/aliasrobotics/CAI">
+    <a align="center" href="" target="https://github.com/SkyH34D/SubTrace">
       <img
         width="75%"
         src="media/SubTrace.png"
