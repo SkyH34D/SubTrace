@@ -2,7 +2,7 @@
 # 🌐 SubTrace
 
   <p>
-    <a align="center"href="" target="https://github.com/SkyH34D/SubTrace">
+    <a align="center" href="https://github.com/SkyH34D/SubTrace" target="_blank">
       <img
         width="50%"
         src="https://github.com/SkyH34D/SubTrace/blob/a496eb9bf470966f5fd67c2b740e65d09102cd32/media/SubTrace.png"
