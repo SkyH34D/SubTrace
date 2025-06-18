@@ -29,6 +29,16 @@ from pathlib import Path
 from typing import Dict, List
 
 try:
+    import customtkinter as ctk  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover - optional dependency
+    ctk = None  # type: ignore
+
+try:
+    from tkinter import messagebox  # standard library, may be missing on some envs
+except Exception:  # pragma: no cover - optional dependency
+    messagebox = None  # type: ignore
+
+try:
     from jinja2 import Template
 except ModuleNotFoundError:  # pragma: no cover - optional dependency
     Template = None  # type: ignore
@@ -164,6 +174,41 @@ def generate_report(domain: str, output_dir: Path, tool_outputs: Dict[str, Path]
     return html_path
 
 
+def run_gui() -> None:
+    """Launch a very small GUI for running :func:`run_all`.
+
+    The GUI is optional and only available when ``customtkinter`` is installed.
+    """
+
+    if ctk is None:
+        raise RuntimeError("customtkinter is not installed")
+
+    app = ctk.CTk()
+    app.title("SubTrace")
+    app.geometry("400x150")
+
+    domain_var = ctk.StringVar()
+
+    def start() -> None:
+        domain = domain_var.get().strip()
+        if not domain:
+            if messagebox:
+                messagebox.showwarning("SubTrace", "Debe introducir un dominio")
+            return
+        run_all(domain)
+        if messagebox:
+            messagebox.showinfo(
+                "SubTrace", f"Resultados guardados en {domain}-recon/"
+            )
+
+    entry = ctk.CTkEntry(app, textvariable=domain_var, width=300)
+    entry.pack(pady=20)
+    button = ctk.CTkButton(app, text="Ejecutar", command=start)
+    button.pack(pady=10)
+
+    app.mainloop()
+
+
 def run_all(domain: str) -> None:
     """Run the full OSINT workflow for ``domain``."""
 
@@ -187,8 +232,19 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Run SubTrace OSINT workflow")
-    parser.add_argument("domain", help="Target domain to enumerate")
+    parser.add_argument("domain", nargs="?", help="Target domain to enumerate")
+    parser.add_argument(
+        "--gui",
+        action="store_true",
+        help="Launch graphical interface (default if no domain provided)",
+    )
 
     args = parser.parse_args()
-    run_all(args.domain)
+
+    if args.gui or (args.domain is None and ctk is not None):
+        run_gui()
+    elif args.domain is not None:
+        run_all(args.domain)
+    else:
+        parser.print_help()
 
