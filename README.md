@@ -10,6 +10,8 @@
     </a>
   </p>
 
+🚧**WORK IN PROGRESS**🚧
+
 **SubTrace** es una herramienta gráfica y automatizada para el reconocimiento pasivo de DNS y subdominios. Combina potentes utilidades OSINT como `dnsrecon`, `amass`, `subfinder`, `httpx`, `gowitness` y `nmap` para consolidar inteligencia sobre la superficie expuesta de un dominio.
 
 ---
