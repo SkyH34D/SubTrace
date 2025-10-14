@@ -85,7 +85,8 @@ def run_dnsrecon(domain: str, output_dir: Path) -> Path:
     """Run ``dnsrecon`` on *domain* and store output."""
 
     out_file = output_dir / "dnsrecon.txt"
-    run_command(["dnsrecon", "-d", domain])
+    output = run_command(["dnsrecon", "-d", domain])
+    out_file.write_text(output, encoding="utf-8")
     return out_file
 
 
@@ -124,13 +125,37 @@ def run_httpx(subdomains_file: Path, output_dir: Path) -> Path:
     return out_file
 
 
-def run_gowitness(subdomains_file: Path, output_dir: Path) -> Path:
-    """Capture screenshots of live hosts using ``gowitness``."""
+def run_gowitness(live_hosts_file: Path, output_dir: Path) -> Path:
+    """Capture screenshots of live hosts using ``gowitness``.
+
+    Returns a log file describing where the screenshots were stored so the
+    report can embed a textual summary instead of attempting to read a
+    directory.
+    """
 
     screenshots = output_dir / "gowitness" / "shots"
     screenshots.mkdir(parents=True, exist_ok=True)
-    run_command(["gowitness", "file", "-f", str(subdomains_file), "--destination", str(screenshots)])
-    return screenshots
+    output = run_command(
+        [
+            "gowitness",
+            "file",
+            "-f",
+            str(live_hosts_file),
+            "--destination",
+            str(screenshots),
+        ]
+    )
+
+    log_file = output_dir / "gowitness.txt"
+    log_file.write_text(
+        (
+            "Resultados de gowitness\n\n"
+            f"Capturas almacenadas en: {screenshots}\n\n"
+            f"Salida de la herramienta:\n{output}"
+        ),
+        encoding="utf-8",
+    )
+    return log_file
 
 
 def run_nmap(live_hosts_file: Path, output_dir: Path) -> Path:
@@ -144,25 +169,34 @@ def run_nmap(live_hosts_file: Path, output_dir: Path) -> Path:
 def generate_report(domain: str, output_dir: Path, tool_outputs: Dict[str, Path]) -> Path:
     """Create HTML and PDF reports summarizing results from *tool_outputs*."""
 
-    template = Template(
-        """
-        <html>
-        <head><meta charset="utf-8"><title>SubTrace Report</title></head>
-        <body>
-        <h1>Reconocimiento para {{ domain }}</h1>
-        {% for name, path in outputs.items() %}
-        <h2>{{ name }}</h2>
-        <pre>{{ path.read_text() }}</pre>
-        {% endfor %}
-        </body>
-        </html>
-        """
-    )
+    if Template is not None:
+        template = Template(
+            """
+            <html>
+            <head><meta charset=\"utf-8\"><title>SubTrace Report</title></head>
+            <body>
+            <h1>Reconocimiento para {{ domain }}</h1>
+            {% for name, path in outputs.items() %}
+            <h2>{{ name }}</h2>
+            <pre>{{ path.read_text() }}</pre>
+            {% endfor %}
+            </body>
+            </html>
+            """
+        )
+        html_content = template.render(domain=domain, outputs=tool_outputs)
+    else:
+        html_content = (
+            "<html><head><meta charset=\"utf-8\"><title>SubTrace Report"
+            "</title></head><body>"
+            f"<h1>Reconocimiento para {domain}</h1>"
+            + "".join(f"<h2>{name}</h2><pre>{path.read_text()}</pre>" for name, path in tool_outputs.items())
+            + "</body></html>"
+        )
 
     html_path = output_dir / f"{domain}_reporte.html"
     pdf_path = output_dir / f"{domain}_reporte.pdf"
 
-    html_content = template.render(domain=domain, outputs=tool_outputs)
     html_path.write_text(html_content, encoding="utf-8")
 
     try:
