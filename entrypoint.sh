@@ -1,11 +1,11 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-DOMAIN="$1"
+DOMAIN="${1:-}"
 
-if [ -z "$DOMAIN" ]; then
+if [[ -z "$DOMAIN" ]]; then
     echo "Usage: $0 <domain>"
     exit 1
 fi
 
-python3 dns_gui_tool.py "$DOMAIN"
+exec python3 dns_gui_tool.py "$DOMAIN"
